@@ -1,6 +1,8 @@
 package main
 
-import "strings"
+import (
+	"strings"
+)
 
 type Section struct {
 	name        string
@@ -9,11 +11,11 @@ type Section struct {
 	dictionary  Dictionary
 }
 
-func NewSection(input string) (*Section, error) {
+func NewSection(input string) (Section, error) {
 
 	sectionName, commentList, keyList, sectionDictionary, err := createSection(input)
 
-	return &Section{sectionName, commentList, keyList, sectionDictionary}, err
+	return Section{sectionName, commentList, keyList, sectionDictionary}, err
 }
 
 //
@@ -31,6 +33,7 @@ func createSection(input string) (string, []string, []string, Dictionary, error)
 	sectionName = strings.TrimSpace(sections[0])
 
 	// section  statements
+	sections[1] = strings.TrimSpace(sections[1])
 	sectionStatements := strings.Split(sections[1], "\n")
 
 	for _, statement := range sectionStatements {
@@ -60,7 +63,8 @@ func (s *Section) GetKeyList() (keys []string) {
 	return s.keyList
 }
 
-func (s *Section) GetKey(key string) (string, error) {
+// GetValue returns the value of a key in the section.
+func (s *Section) GetValue(key string) (string, error) {
 	return s.dictionary.Search(key)
 }
 
@@ -78,4 +82,9 @@ func (s *Section) UpdateKey(key string, value string) error {
 		s.SetKey(key, value)
 		return nil
 	}
+}
+
+// returns the Comment List of the section
+func (s *Section) GetComments() []string {
+	return s.commentList
 }

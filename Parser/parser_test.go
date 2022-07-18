@@ -6,13 +6,7 @@ import (
 )
 
 //Declaring a Map is somewhat similar to an array. Except, it starts with the map keyword and requires two types. The first is the key type, which is written inside the []. The second is the value type, which goes right after the []
-func TestSection(t *testing.T) {
-	sectionName := "section1"
-	var commentList []string
-	var keyList []string = []string{"key1", "key2"}
-	var sectionDictionary Dictionary = map[string]string{"key1": "value1", "key2": "value2"}
-
-	section := Section{sectionName, commentList, keyList, sectionDictionary}
+func TestParser(t *testing.T) {
 
 	t.Run("Get the Name Of the Section", func(t *testing.T) {
 		got := section.Name()

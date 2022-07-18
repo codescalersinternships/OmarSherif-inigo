@@ -43,42 +43,37 @@ func CreateFile(filename, text string) {
 	fmt.Printf("\nLength: %d bytes", len)
 }
 
-func ReadFile(filename string) {
+func ReadFile(filename string) string {
 
-	fmt.Printf("\n\nReading a file in Go lang\n")
-
-	// file is read using ReadFile()
-	// method of ioutil package
-	data, err := ioutil.ReadFile(filename)
-
-	// in case of an error the error
-	// statement is printed and
-	// program is stopped
+	// we open the file
+	file, err := os.Open(filename)
 	if err != nil {
-		log.Panicf("failed reading data from file: %s", err)
+		return ""
 	}
-	fmt.Printf("\nFile Name: %s", filename)
-	fmt.Printf("\nSize: %d bytes", len(data))
-	fmt.Printf("\nData: %s", data)
+	// we read the file
+	fileContent, err := ioutil.ReadAll(file)
+	if err != nil {
+		return ""
+	}
+	// we close the file
+	file.Close()
+	// we load the file content into the parser
+	return string(fileContent)
 
 }
 
-// main function
-/* func main() {
+func WriteToFile(filename, text string) {
 
-	// user input for filename
-	fmt.Println("Enter filename: ")
-	filename := "omar.txt"
-	input := "I love pizza"
-
-	// file is created and read
-	CreateFile(filename, input)
-	ReadFile(filename)
-} */
-
-/*
-// user input for file content
-fmt.Println("Enter text: ")
-inputReader := bufio.NewReader(os.Stdin)
-input, _ := inputReader.ReadString('\n')
-*/
+	// we open the file
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalf("failed opening file: %s", err)
+	}
+	// we write the file
+	_, err = file.WriteString(text)
+	if err != nil {
+		log.Fatalf("failed writing to file: %s", err)
+	}
+	// we close the file
+	file.Close()
+}

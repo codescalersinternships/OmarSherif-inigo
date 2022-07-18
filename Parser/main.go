@@ -4,9 +4,7 @@ import (
 	"fmt"
 )
 
-/*
-func main() {
-	const input = `[owner]
+const input = `[owner]
 	name = John Doe
 	organization = Acme Widgets Inc.
 
@@ -16,11 +14,14 @@ func main() {
 	port = 143
 	file = "payroll.dat"`
 
+func main() {
+
 	parser := NewParser()
 	parser.LoadFromString(input)
 
-	fmt.Println("\n\n")
 	fmt.Println("Section names:")
+
+	// print array of section names
 	sectionNames, err := parser.GetSectionNames()
 	if err != nil {
 		panic(err)
@@ -28,16 +29,10 @@ func main() {
 	for _, sectionName := range sectionNames {
 		fmt.Printf("\t%s\n", sectionName)
 	}
+	fmt.Println()
 
-}
-*/
+	fmt.Println("Section Keys:")
 
-func main() {
-	fmt.Println("Enter filename: ")
-	filename := "omar.txt"
-	input := "I love pizza"
+	fmt.Println(parser.GetSections())
 
-	// file is created and read
-	CreateFile(filename, input)
-	ReadFile(filename)
 }
