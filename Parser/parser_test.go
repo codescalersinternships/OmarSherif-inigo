@@ -24,7 +24,7 @@ func TestParser(t *testing.T) {
 	})
 
 	t.Run("get a value of a key in a section", func(t *testing.T) {
-		got, err := parser.GetValue("owner", "name")
+		got, err := parser.Get("owner", "name")
 		want := "John Doe"
 		if err != nil {
 			t.Errorf("Error: %v", err)

@@ -85,7 +85,7 @@ func (p *Parser) GetSection(sectionName string) (Section, error) {
 }
 
 // returns the section's key value with the given section and key names (TESTED)
-func (p *Parser) GetValue(sectionName string, key string) (string, error) {
+func (p *Parser) Get(sectionName string, key string) (string, error) {
 	section, err := p.GetSection(sectionName)
 	if err != nil {
 		return "", err
@@ -122,6 +122,17 @@ func (p *Parser) ToString(input string) (output string) {
 // Returns the Original INI String (Tested)
 func (p *Parser) getOriginalString() string {
 	return p.code
+}
+
+// set a key in a section
+func (p *Parser) Set(section_name, key, value string) {
+	section, err := p.GetSection(section_name)
+	if err != nil { // if the section is not found
+		section, _ = NewSection("[" + section_name + "]")
+		p.allSections.Append(section_name, section)
+	}
+	section.SetKey(key, value)
+
 }
 
 // returns the section with the given name
