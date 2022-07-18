@@ -70,12 +70,12 @@ func (s *Section) SetKey(key string, value string) {
 }
 
 // Update the value of a key in the section.
-func (s *Section) UpdateKey(error) {
-	if s.dictionary.Search(key) == "" {
-		return noKeyError
+func (s *Section) UpdateKey(key string, value string) error {
+	_, err := s.dictionary.Search(key)
+	if err != nil {
+		return err
 	} else {
 		s.SetKey(key, value)
 		return nil
 	}
-
 }

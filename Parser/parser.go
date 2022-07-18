@@ -29,7 +29,7 @@ type Parser struct {
 }
 
 func NewParser() *Parser {
-	return &Parser{"1", sectionDictionary{make(map[string]Section)}}
+	return &Parser{"1", sectionDictionary{make(map[string]*Section)}}
 }
 func (p *Parser) LoadFromString(input string) (string, error) {
 	p.code = input
@@ -38,7 +38,7 @@ func (p *Parser) LoadFromString(input string) (string, error) {
 	// we loop over across the sections
 	for _, section := range sections {
 		// we create a section object individually
-		section, err := SectionConstructor(section)
+		section, err := NewSection(section)
 		if err != nil {
 			return "", err
 		}
@@ -56,7 +56,7 @@ func (p *Parser) GetSections() (sectionDictionary, error) {
 // returns the all sections names
 func (p *Parser) GetSectionNames() ([]string, error) {
 	sections := []string{}
-	for sectionName, _ := range p.allSections.sections {
+	for sectionName := range p.allSections.sections {
 		sections = append(sections, sectionName)
 	}
 	if len(sections) == 0 {
@@ -66,14 +66,15 @@ func (p *Parser) GetSectionNames() ([]string, error) {
 }
 
 // returns the section with the given name
-func (p *Parser) GetSection(sectionName string) (Section, error) {
-	section := Section{}
-	for sectionName, _ := range p.allSections.sections {
-		if sectionName == sectionName {
+func (p *Parser) GetSection(sectionName string) (*Section, error) {
+	var section *Section
+	for name, _ := range p.allSections.sections {
+		if sectionName == name {
 			section = p.allSections.sections[sectionName]
 			return section, nil
 		}
 	}
+
 	// Didnt find the section
 	return section, NoSectionError
 }
