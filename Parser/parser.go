@@ -30,7 +30,7 @@ type Parser struct {
 }
 
 func NewParser() *Parser {
-	return &Parser{"1", sectionDictionary{make(map[string]Section)}}
+	return &Parser{"", sectionDictionary{make(map[string]Section)}}
 }
 func (p *Parser) LoadFromString(input string) {
 	p.code = input
@@ -53,12 +53,12 @@ func (p *Parser) LoadFromString(input string) {
 
 }
 
-// returns the all the sections
+// returns the all the sections (TESTED)
 func (p *Parser) GetSections() (sectionDictionary, error) {
 	return p.allSections, nil
 }
 
-// returns the all sections names
+// returns the all sections names (TESTED)
 func (p *Parser) GetSectionNames() ([]string, error) {
 	sections := []string{}
 	for sectionName := range p.allSections.sections {
@@ -70,7 +70,7 @@ func (p *Parser) GetSectionNames() ([]string, error) {
 	return sections, nil
 }
 
-// returns the section with the given name
+// returns the section with the given name (TESTED)
 func (p *Parser) GetSection(sectionName string) (Section, error) {
 	var section Section
 	for name, _ := range p.allSections.sections {
@@ -84,7 +84,7 @@ func (p *Parser) GetSection(sectionName string) (Section, error) {
 	return section, NoSectionError
 }
 
-// returns the section's key value with the given section and key names
+// returns the section's key value with the given section and key names (TESTED)
 func (p *Parser) GetValue(sectionName string, key string) (string, error) {
 	section, err := p.GetSection(sectionName)
 	if err != nil {
@@ -119,9 +119,13 @@ func (p *Parser) ToString(input string) (output string) {
 	return output
 }
 
+// Returns the Original INI String (Tested)
+func (p *Parser) getOriginalString() string {
+	return p.code
+}
+
 // returns the section with the given name
 func (p *Parser) LoadFromFile(fileName string) {
-
 	// we read the file
 	fileContent := ReadFile(fileName)
 	p.LoadFromString(string(fileContent))

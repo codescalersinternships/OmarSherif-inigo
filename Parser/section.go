@@ -41,7 +41,7 @@ func createSection(input string) (string, []string, []string, Dictionary, error)
 		statement = strings.TrimSpace(statement)
 		// we check if the statement is a comment
 		if strings.HasPrefix(statement, string(commentStart)) {
-			commentList = append(commentList, strings.TrimSpace(statement[1:]))
+			commentList = append(commentList, strings.TrimSpace(statement))
 		} else {
 			// we split statement into a key value pair
 			keyValue := strings.Split(statement, "=")
