@@ -68,7 +68,7 @@ func (p *Parser) checkInput(input string) error {
 			return ErrSyntax // if the section is closed before opened or more than one section
 		} else if strings.Contains(statment, ";") && string(statment[0]) != ";" {
 			return ErrSyntax // if the statment starts contains ; but doest not start with ;
-		} else if strings.Contains(statment, "=") && (string(statment[0]) == "=" ) {
+		} else if strings.Contains(statment, "=") && (string(statment[0]) == "=" || string(statment[len(statment)-1]) == "=") {
 			return ErrSyntax // if the first character is =
 		} else if strings.Contains(statment, "]") && strings.Contains(statment, "[") && len(statment) == 2 {
 			return ErrSyntax // if the first character is not =
