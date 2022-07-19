@@ -32,9 +32,14 @@ type Parser struct {
 func NewParser() *Parser {
 	return &Parser{"", sectionDictionary{make(map[string]Section)}}
 }
-func (p *Parser) LoadFromString(input string) {
+func (p *Parser) LoadFromString(input string) error {
 	p.code = input
-	// we seperat the sections
+	// we check the input if it have Syntax Errors
+	err := p.checkInput(input)
+	if err != nil {
+		return err
+	}
+	// we seperate the sections
 	sections := strings.Split(input, "[")
 	// we loop over across the sections
 	for index, section := range sections {
@@ -45,11 +50,30 @@ func (p *Parser) LoadFromString(input string) {
 		}
 		section, err := NewSection(section)
 		if err != nil {
-
+			return err
 		}
+
 		// we append the section to the parser sections
 		p.allSections.Append(section.name, section)
 	}
+	return nil
+}
+func (p *Parser) checkInput(input string) error {
+	statements := strings.Split(input, "\n")
+	var err error
+	err = nil
+	for _, statment := range statements {
+		statment = strings.TrimSpace(statment)
+		if strings.Contains(statment, "[") && !strings.Contains(statment, "]") {
+			err = SyntaxError
+		} else if strings.Contains(statment, "]") && !strings.Contains(statment, "[") {
+			err = SyntaxError
+		} else if strings.Contains(statment, ";") && string(statment[0]) != ";" {
+			err = SyntaxError
+		}
+
+	}
+	return err
 
 }
 
@@ -136,10 +160,11 @@ func (p *Parser) Set(section_name, key, value string) {
 }
 
 // returns the section with the given name
-func (p *Parser) LoadFromFile(fileName string) {
+func (p *Parser) LoadFromFile(fileName string) error {
 	// we read the file
-	fileContent := ReadFile(fileName)
+	fileContent, err := ReadFile(fileName)
 	p.LoadFromString(string(fileContent))
+	return err
 }
 
 func (p *Parser) SaveToFile(fileName string) {

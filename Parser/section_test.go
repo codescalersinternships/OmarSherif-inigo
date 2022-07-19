@@ -34,7 +34,7 @@ func TestSection(t *testing.T) {
 		got, err := section.GetValue("key1")
 		want := "value1"
 		if err != nil {
-			panic(err)
+			t.Errorf("Error %q", err)
 		}
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %q want %q", got, want)

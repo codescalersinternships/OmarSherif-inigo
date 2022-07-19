@@ -44,33 +44,33 @@ func TestParser(t *testing.T) {
 	})
 
 	// todo I don't know how to test this the results are identical
-	/* 	t.Run("returns the section dictionary", func(t *testing.T) {
-	   		got, err := parser.GetSections()
-	   		if err != nil {
-	   			t.Errorf("Error: %v", err)
-	   		}
+	t.Run("returns the section dictionary", func(t *testing.T) {
+		got, err := parser.GetSections()
+		if err != nil {
+			t.Errorf("Error: %v", err)
+		}
 
-	   		want := sectionDictionary{map[string]Section{"owner": {"owner", []string{}, []string{"name", "organization"},
-	   			map[string]string{"name": "John Doe", "organization": "Acme Widgets Inc."}},
-	   			"database": {"database", []string{"; use IP address in case network name resolution is not working"},
-	   				[]string{"server", "port", "file"}, map[string]string{"server": "192.0.2.62", "port": "143", "file": "\"payroll.dat\""}}}}
+		want := sectionDictionary{map[string]Section{"owner": {"owner", []string{}, []string{"name", "organization"},
+			map[string]string{"name": "John Doe", "organization": "Acme Widgets Inc."}},
+			"database": {"database", []string{"; use IP address in case network name resolution is not working"},
+				[]string{"server", "port", "file"}, map[string]string{"server": "192.0.2.62", "port": "143", "file": "\"payroll.dat\""}}}}
 
-	   		if !reflect.DeepEqual(got, want) {
-	   			t.Errorf("got %q want %q", got, want)
-	   		}
-	   	})
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
 
-	   	t.Run("returns the section", func(t *testing.T) {
-	   		got, err := parser.GetSection("owner")
-	   		if err != nil {
-	   			t.Errorf("Error: %v", err)
-	   		}
+	t.Run("returns the section", func(t *testing.T) {
+		got, err := parser.GetSection("owner")
+		if err != nil {
+			t.Errorf("Error: %v", err)
+		}
 
-	   		want := Section{"owner", []string{}, []string{"name", "organization"}, map[string]string{"name": "John Doe", "organization": "Acme Widgets Inc."}}
+		want := Section{"owner", []string{}, []string{"name", "organization"}, map[string]string{"name": "John Doe", "organization": "Acme Widgets Inc."}}
 
-	   		if !reflect.DeepEqual(got, want) {
-	   			t.Errorf("got %q want %q", got, want)
-	   		}
-	   	}) */
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
 
 }

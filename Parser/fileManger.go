@@ -43,22 +43,22 @@ func CreateFile(filename, text string) {
 	fmt.Printf("\nLength: %d bytes", len)
 }
 
-func ReadFile(filename string) string {
+func ReadFile(filename string) (string, error) {
 
 	// we open the file
 	file, err := os.Open(filename)
 	if err != nil {
-		return ""
+		return "", err
 	}
 	// we read the file
 	fileContent, err := ioutil.ReadAll(file)
 	if err != nil {
-		return ""
+		return "", err
 	}
 	// we close the file
 	file.Close()
 	// we load the file content into the parser
-	return string(fileContent)
+	return string(fileContent), err
 
 }
 
