@@ -7,6 +7,16 @@ import (
 
 //Declaring a Map is somewhat similar to an array. Except, it starts with the map keyword and requires two types. The first is the key type, which is written inside the []. The second is the value type, which goes right after the []
 func TestParser(t *testing.T) {
+	const input = `[owner]
+	name = John Doe
+	organization = Acme Widgets Inc.
+
+	[database]
+	; use IP address in case network name resolution is not working
+	server = 192.0.2.62
+	port = 143
+	file = "payroll.dat"`
+
 	parser := NewParser()
 	parser.LoadFromString(input)
 
@@ -31,14 +41,6 @@ func TestParser(t *testing.T) {
 		}
 
 		if got != want {
-			t.Errorf("got %q want %q", got, want)
-		}
-	})
-	t.Run("returns the original string", func(t *testing.T) {
-		got := parser.getOriginalString()
-		want := input
-
-		if want != got {
 			t.Errorf("got %q want %q", got, want)
 		}
 	})

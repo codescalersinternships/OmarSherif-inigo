@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func CreateFile(filename, text string) (int, error) {
+func CreateFile(filename, text string) error {
 
 	// Creating the file using Create() method
 	// with user inputted filename and err
@@ -16,7 +16,7 @@ func CreateFile(filename, text string) (int, error) {
 
 	file.Close()
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	// closing the running file after the main
@@ -27,12 +27,12 @@ func CreateFile(filename, text string) (int, error) {
 	// WriteString() method and the
 	// length of the string is stored
 	// in len variable
-	len, err := file.WriteString(text)
+	_, err = file.WriteString(text)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	return len, err
+	return err
 
 }
 

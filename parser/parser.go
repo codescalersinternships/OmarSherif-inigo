@@ -6,16 +6,6 @@ import (
 	"strings"
 )
 
-const input = `[owner]
-	name = John Doe
-	organization = Acme Widgets Inc.
-
-	[database]
-	; use IP address in case network name resolution is not working
-	server = 192.0.2.62
-	port = 143
-	file = "payroll.dat"`
-
 const (
 	commentStart      = ';'
 	sectionStart      = '['
@@ -35,15 +25,13 @@ var (
 )
 
 type Parser struct {
-	code        string
 	allSections sectionDictionary
 }
 
 func NewParser() *Parser {
-	return &Parser{"", sectionDictionary{make(map[string]Section)}}
+	return &Parser{sectionDictionary{make(map[string]Section)}}
 }
 func (p *Parser) LoadFromString(input string) error {
-	p.code = input
 	// we check the input if it have Syntax Errors
 	err := p.checkInput(input)
 	if err != nil {
@@ -90,7 +78,6 @@ func (p *Parser) checkInput(input string) error {
 		} else if (strings.Contains(statment, "]") && strings.Contains(statment, "[")) && (openBracket > closeBracket) {
 			return SyntaxError // if the brackets are not in the right order
 		} else if !strings.Contains(statment, "]") && !strings.Contains(statment, "[") && !strings.Contains(statment, "=") && !strings.Contains(statment, ";") {
-			fmt.Print(statment + "\n")
 			return SyntaxError // if the statment is not a comment and does not contain brackets
 		}
 
@@ -140,22 +127,15 @@ func (p *Parser) Get(sectionName string, key string) (string, error) {
 }
 
 // it returns it into its original Form
-func (p *Parser) ToString(input string) (output string) {
+func (p Parser) String(input string) (output string) {
 	for sectionName, section := range p.allSections.sections {
 		output += fmt.Sprintf("[%s]\n", sectionName)
 		for key, value := range section.dictionary {
 			output += fmt.Sprintf("%s = %s\n", key, value)
 		}
 		output += "\n"
-
 	}
-
 	return output
-}
-
-// Returns the Original INI String (Tested)
-func (p *Parser) getOriginalString() string {
-	return p.code
 }
 
 // set a key in a section
