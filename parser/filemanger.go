@@ -14,7 +14,7 @@ func CreateFile(filename, text string) error {
 	// variable catches any error thrown
 	file, err := os.Create(filename)
 
-	file.Close()
+	defer file.Close()
 	if err != nil {
 		return err
 	}
@@ -40,12 +40,12 @@ func ReadFile(filename string) (string, error) {
 
 	// we open the file
 	file, err := os.Open(filename)
+	defer file.Close()
 	if err != nil {
 		return "", err
 	}
 	// we read the file
 	fileContent, err := ioutil.ReadAll(file)
-	file.Close()
 	if err != nil {
 		return "", err
 	}
