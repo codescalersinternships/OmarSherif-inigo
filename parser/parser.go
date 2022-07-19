@@ -24,6 +24,10 @@ var (
 	SyntaxError    = errors.New("There is no section named %s")
 )
 
+type sectionDictionary struct {
+	sections map[string]Section
+}
+
 type Parser struct {
 	allSections sectionDictionary
 }
@@ -52,7 +56,8 @@ func (p *Parser) LoadFromString(input string) error {
 		}
 
 		// we append the section to the parser sections
-		p.allSections.PutKey(section.name, section)
+		p.allSections.sections[section.name] = section
+
 	}
 	return nil
 }
@@ -143,10 +148,9 @@ func (p *Parser) Set(section_name, key, value string) {
 	section, err := p.GetSection(section_name)
 	if err != nil { // if the section is not found
 		section, _ = NewSection(section_name)
-		p.allSections.PutKey(section_name, section)
+		p.allSections.sections[section.name] = section
 	}
 	section.SetKey(key, value)
-
 }
 
 // returns the section with the given name

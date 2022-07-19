@@ -30,7 +30,6 @@ func TestParser(t *testing.T) {
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %q want %q", got, want)
 		}
-
 	})
 
 	t.Run("get a value of a key in a section", func(t *testing.T) {
@@ -69,6 +68,70 @@ func TestParser(t *testing.T) {
 		want := Section{"owner", map[string]string{"name": "John Doe", "organization": "Acme Widgets Inc."}}
 
 		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+
+	t.Run("returns the value of a key in a section", func(t *testing.T) {
+		got, err := parser.Get("owner", "name")
+		want := "John Doe"
+		if err != nil {
+			t.Errorf("Error: %v", err)
+		}
+
+		if got != want {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+
+	t.Run("returns the value of a key in a section", func(t *testing.T) {
+		got, err := parser.Get("owner", "organization")
+		want := "Acme Widgets Inc."
+		if err != nil {
+			t.Errorf("Error: %v", err)
+		}
+
+		if got != want {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+	t.Run("returns the value of a key in a section", func(t *testing.T) {
+		got, err := parser.Get("database", "server")
+		want := "192.0.2.62"
+		if err != nil {
+			t.Errorf("Error: %v", err)
+		}
+		if got != want {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+	t.Run("returns the value of a key in a section", func(t *testing.T) {
+		got, err := parser.Get("database", "port")
+		want := "143"
+		if err != nil {
+			t.Errorf("Error: %v", err)
+		}
+		if got != want {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+	t.Run("returns the value of a key in a section", func(t *testing.T) {
+		got, err := parser.Get("database", "file")
+		want := "\"payroll.dat\""
+		if err != nil {
+			t.Errorf("Error: %v", err)
+		}
+		if got != want {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+	t.Run("returns the value of a key in a section", func(t *testing.T) {
+		got, err := parser.Get("database", "unknown")
+		want := ""
+		if err != ErrKeyNotFound {
+			t.Errorf("Error: %v", err)
+		}
+		if got != want {
 			t.Errorf("got %q want %q", got, want)
 		}
 	})
