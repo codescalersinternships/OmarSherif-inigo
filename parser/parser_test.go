@@ -136,4 +136,59 @@ func TestParser(t *testing.T) {
 		}
 	})
 
+	t.Run("(open with no closed bracket) inputting wrong input by into Parser checkInput() functionality", func(t *testing.T) {
+		wrongInput := `[owner][`
+		err := parser.LoadFromString(wrongInput)
+
+		if err != ErrSyntax {
+			t.Errorf("Error: %v", err)
+		}
+
+	})
+	t.Run("(comment not at the begining of the statement) inputting wrong input by into Parser checkInput() functionality", func(t *testing.T) {
+		wrongInput := `[owner];comment`
+		err := parser.LoadFromString(wrongInput)
+
+		if err != ErrSyntax {
+			t.Errorf("Error: %v", err)
+		}
+
+	})
+	t.Run("(meaningless statement) inputting wrong input by into Parser checkInput() functionality", func(t *testing.T) {
+		wrongInput := `meaningless`
+		err := parser.LoadFromString(wrongInput)
+
+		if err != ErrSyntax {
+			t.Errorf("Error: %v", err)
+		}
+	})
+	t.Run("(empty section) inputting wrong input by into Parser checkInput() functionality", func(t *testing.T) {
+		wrongInput := `[]`
+		err := parser.LoadFromString(wrongInput)
+
+		if err != ErrSyntax {
+			t.Errorf("Error: %v", err)
+		}
+	})
+	t.Run("(= at the begining) inputting wrong input by into Parser checkInput() functionality", func(t *testing.T) {
+		wrongInput := `[owner]
+		;comment
+		=`
+		err := parser.LoadFromString(wrongInput)
+
+		if err != ErrSyntax {
+			t.Errorf("Error: %v", err)
+		}
+	})
+	t.Run("(= at the end) inputting wrong input by into Parser checkInput() functionality", func(t *testing.T) {
+		wrongInput := `[owner]
+		;comment
+		name=`
+		err := parser.LoadFromString(wrongInput)
+
+		if err != ErrSyntax {
+			t.Errorf("Error: %v", err)
+		}
+	})
+
 }

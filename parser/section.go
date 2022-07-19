@@ -4,6 +4,8 @@ import (
 	"strings"
 )
 
+type Dictionary map[string]string
+
 type Section struct {
 	name       string
 	dictionary Dictionary
@@ -36,7 +38,7 @@ func createSection(input string) (string, Dictionary, error) {
 		// we remove the spaces
 		statement = strings.TrimSpace(statement)
 		// we check if the statement is a comment
-		if strings.HasPrefix(statement, string(commentStart)) {
+		if strings.HasPrefix(statement, string(";")) {
 			continue
 		} else {
 			// we split statement into a key value pair
@@ -63,21 +65,26 @@ func (s *Section) GetKeyList() (keys []string) {
 
 // GetValue returns the value of a key in the section.
 func (s *Section) GetValue(key string) (string, error) {
-	return s.dictionary.Search(key)
+	value, ok := s.dictionary[key]
+	if !ok {
+		return "", ErrKeyNotFound
+	}
+
+	return value, nil
 }
 
 // Set a key in the section.
 func (s *Section) SetKey(key string, value string) {
-	s.dictionary.PutKey(key, value)
+	s.dictionary[key] = value
+
 }
 
 // Update the value of a key in the section.
 func (s *Section) UpdateKey(key string, value string) error {
-	_, err := s.dictionary.Search(key)
-	if err != nil {
-		return err
-	} else {
-		s.SetKey(key, value)
-		return nil
+	_, ok := s.dictionary[key]
+	if !ok {
+		return ErrKeyNotFound
 	}
+	s.dictionary[key] = value
+	return nil
 }

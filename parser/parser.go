@@ -6,22 +6,12 @@ import (
 	"strings"
 )
 
-const (
-	commentStart      = ';'
-	sectionStart      = '['
-	sectionEnd        = ']'
-	keyValueSeperator = '='
-	noKeyMessage      = "Key %s is not found in the following section  %s"
-	noSectionMessage  = "Section %s is not found"
-)
-
 // Errors
 var (
-	NoKeyError     = errors.New(noKeyMessage)
-	NoKeysError    = errors.New("There is no keys %s in section named %s")
-	NoSectionError = errors.New(noSectionMessage)
-	NoSections     = errors.New("There is no sections")
-	SyntaxError    = errors.New("There is no section named %s")
+	ErrNoSection   = errors.New("Section %s is not found")
+	ErrNoSections  = errors.New("There is no sections")
+	ErrSyntax      = errors.New("There is no section named %s")
+	ErrKeyNotFound = errors.New("There is no keys %s in section named %s")
 )
 
 type sectionDictionary struct {
@@ -71,19 +61,21 @@ func (p *Parser) checkInput(input string) error {
 			continue
 		}
 		if strings.Contains(statment, "[") && !strings.Contains(statment, "]") {
-			return SyntaxError // if the section open but not closed
+			return ErrSyntax // if the section open but not closed
 		} else if strings.Contains(statment, "]") && !strings.Contains(statment, "[") {
-			return SyntaxError // if the section is closed but not opened
+			return ErrSyntax // if the section is closed but not opened
 		} else if (strings.Contains(statment, "[") && strings.Contains(statment, "]")) && (openBracket > closeBracket || strings.Count(statment, "[") != 1 || strings.Count(statment, "]") != 1) {
-			return SyntaxError // if the section is closed before opened or more than one section
+			return ErrSyntax // if the section is closed before opened or more than one section
 		} else if strings.Contains(statment, ";") && string(statment[0]) != ";" {
-			return SyntaxError // if the statment starts contains ; but doest not start with ;
-		} else if strings.Contains(statment, "=") && string(statment[0]) == "=" {
-			return SyntaxError // if the first character is =
+			return ErrSyntax // if the statment starts contains ; but doest not start with ;
+		} else if strings.Contains(statment, "=") && (string(statment[0]) == "=" ) {
+			return ErrSyntax // if the first character is =
+		} else if strings.Contains(statment, "]") && strings.Contains(statment, "[") && len(statment) == 2 {
+			return ErrSyntax // if the first character is not =
 		} else if (strings.Contains(statment, "]") && strings.Contains(statment, "[")) && (openBracket > closeBracket) {
-			return SyntaxError // if the brackets are not in the right order
+			return ErrSyntax // if the brackets are not in the right order
 		} else if !strings.Contains(statment, "]") && !strings.Contains(statment, "[") && !strings.Contains(statment, "=") && !strings.Contains(statment, ";") {
-			return SyntaxError // if the statment is not a comment and does not contain brackets
+			return ErrSyntax // if the statment is not a comment and does not contain brackets
 		}
 
 	}
@@ -103,7 +95,7 @@ func (p *Parser) GetSectionNames() ([]string, error) {
 		sections = append(sections, sectionName)
 	}
 	if len(sections) == 0 {
-		return sections, NoSectionError
+		return sections, ErrNoSection
 	}
 	return sections, nil
 }
@@ -119,7 +111,7 @@ func (p *Parser) GetSection(sectionName string) (Section, error) {
 	}
 
 	// Didnt find the section
-	return section, NoSectionError
+	return section, ErrNoSection
 }
 
 // returns the section's key value with the given section and key names (TESTED)
@@ -153,7 +145,7 @@ func (p *Parser) Set(section_name, key, value string) {
 	section.SetKey(key, value)
 }
 
-// returns the section with the given name
+// loads a file into the parser
 func (p *Parser) LoadFromFile(fileName string) error {
 	// we read the file
 	fileContent, err := ReadFile(fileName)
@@ -164,6 +156,7 @@ func (p *Parser) LoadFromFile(fileName string) error {
 	return err
 }
 
+// save the sections into the file
 func (p *Parser) SaveToFile(fileName string) error {
 	err := WriteToFile(fileName, fmt.Sprintf("Map: %v", p.allSections))
 	return err
