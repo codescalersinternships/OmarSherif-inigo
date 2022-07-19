@@ -38,6 +38,9 @@ func createSection(input string) (string, Dictionary, error) {
 		// we remove the spaces
 		statement = strings.TrimSpace(statement)
 		// we check if the statement is a comment
+		if statement == "\n" || len(statement) == 0 {
+			continue
+		}
 		if strings.HasPrefix(statement, string(";")) {
 			continue
 		} else {

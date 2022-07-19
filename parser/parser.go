@@ -37,9 +37,10 @@ func (p *Parser) LoadFromString(input string) error {
 	for index, section := range sections {
 		// we create a section object individually
 
-		if index == 0 {
+		if index == 0 || strings.TrimSpace(section) == "" || strings.TrimSpace(section) == "\n" {
 			continue
 		}
+
 		section, err := NewSection(section)
 		if err != nil {
 			return err

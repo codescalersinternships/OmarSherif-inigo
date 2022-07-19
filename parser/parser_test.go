@@ -191,4 +191,11 @@ func TestParser(t *testing.T) {
 		}
 	})
 
+	t.Run("add key then save to file", func(t *testing.T) {
+		err := parser.SaveToFile("output.ini")
+		if err != nil {
+			t.Errorf("Error: %v", err)
+		}
+	})
+
 }
