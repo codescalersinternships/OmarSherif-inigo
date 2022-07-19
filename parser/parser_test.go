@@ -43,7 +43,6 @@ func TestParser(t *testing.T) {
 		}
 	})
 
-	// todo I don't know how to test this the results are identical
 	t.Run("returns the section dictionary", func(t *testing.T) {
 		got, err := parser.GetSections()
 		if err != nil {

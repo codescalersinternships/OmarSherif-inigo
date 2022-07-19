@@ -14,10 +14,10 @@ func CreateFile(filename, text string) (int, error) {
 	// variable catches any error thrown
 	file, err := os.Create(filename)
 
+	file.Close()
 	if err != nil {
 		return 0, err
 	}
-	defer file.Close()
 
 	// closing the running file after the main
 	// method has completed execution and
@@ -45,11 +45,11 @@ func ReadFile(filename string) (string, error) {
 	}
 	// we read the file
 	fileContent, err := ioutil.ReadAll(file)
+	file.Close()
 	if err != nil {
 		return "", err
 	}
 	// we close the file
-	file.Close()
 	// we load the file content into the parser
 	return string(fileContent), err
 
@@ -64,10 +64,11 @@ func WriteToFile(filename, text string) error {
 	}
 	// we write the file
 	_, err = file.WriteString(text)
+
+	// we close the file
+	file.Close()
 	if err != nil {
 		return err
 	}
-	// we close the file
-	file.Close()
 	return nil
 }

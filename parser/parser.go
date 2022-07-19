@@ -70,20 +70,32 @@ func (p *Parser) LoadFromString(input string) error {
 }
 func (p *Parser) checkInput(input string) error {
 	statements := strings.Split(input, "\n")
-	var err error
-	err = nil
 	for _, statment := range statements {
 		statment = strings.TrimSpace(statment)
+		openBracket := strings.Index(statment, "[")
+		closeBracket := strings.Index(statment, "]")
+		if len(statment) == 0 {
+			continue
+		}
 		if strings.Contains(statment, "[") && !strings.Contains(statment, "]") {
-			err = SyntaxError
+			return SyntaxError // if the section open but not closed
 		} else if strings.Contains(statment, "]") && !strings.Contains(statment, "[") {
-			err = SyntaxError
+			return SyntaxError // if the section is closed but not opened
+		} else if (strings.Contains(statment, "[") && strings.Contains(statment, "]")) && (openBracket > closeBracket || strings.Count(statment, "[") != 1 || strings.Count(statment, "]") != 1) {
+			return SyntaxError // if the section is closed before opened or more than one section
 		} else if strings.Contains(statment, ";") && string(statment[0]) != ";" {
-			err = SyntaxError
+			return SyntaxError // if the statment starts contains ; but doest not start with ;
+		} else if strings.Contains(statment, "=") && string(statment[0]) == "=" {
+			return SyntaxError // if the first character is =
+		} else if (strings.Contains(statment, "]") && strings.Contains(statment, "[")) && (openBracket > closeBracket) {
+			return SyntaxError // if the brackets are not in the right order
+		} else if !strings.Contains(statment, "]") && !strings.Contains(statment, "[") && !strings.Contains(statment, "=") && !strings.Contains(statment, ";") {
+			fmt.Print(statment + "\n")
+			return SyntaxError // if the statment is not a comment and does not contain brackets
 		}
 
 	}
-	return err
+	return nil
 
 }
 
@@ -150,7 +162,7 @@ func (p *Parser) getOriginalString() string {
 func (p *Parser) Set(section_name, key, value string) {
 	section, err := p.GetSection(section_name)
 	if err != nil { // if the section is not found
-		section, _ = NewSection("[" + section_name + "]")
+		section, _ = NewSection(section_name)
 		p.allSections.PutKey(section_name, section)
 	}
 	section.SetKey(key, value)
@@ -161,10 +173,14 @@ func (p *Parser) Set(section_name, key, value string) {
 func (p *Parser) LoadFromFile(fileName string) error {
 	// we read the file
 	fileContent, err := ReadFile(fileName)
-	p.LoadFromString(string(fileContent))
+	if err != nil {
+		return err
+	}
+	err = p.LoadFromString(string(fileContent))
 	return err
 }
 
-func (p *Parser) SaveToFile(fileName string) {
-	WriteToFile(fileName, fmt.Sprintf("Map: %v", p.allSections))
+func (p *Parser) SaveToFile(fileName string) error {
+	err := WriteToFile(fileName, fmt.Sprintf("Map: %v", p.allSections))
+	return err
 }
