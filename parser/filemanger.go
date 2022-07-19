@@ -3,18 +3,11 @@ package main
 
 // importing the requires packages
 import (
-	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 )
 
-func CreateFile(filename, text string) {
-
-	// fmt package implements formatted I/O and
-	// contains inbuilt methods like Printf
-	// and Scanf
-	fmt.Printf("Writing to a file in Go lang\n")
+func CreateFile(filename, text string) (int, error) {
 
 	// Creating the file using Create() method
 	// with user inputted filename and err
@@ -22,13 +15,13 @@ func CreateFile(filename, text string) {
 	file, err := os.Create(filename)
 
 	if err != nil {
-		log.Fatalf("failed creating file: %s", err)
+		return 0, err
 	}
+	defer file.Close()
 
 	// closing the running file after the main
 	// method has completed execution and
 	// the writing to the file is complete
-	defer file.Close()
 
 	// writing data to the file using
 	// WriteString() method and the
@@ -36,11 +29,11 @@ func CreateFile(filename, text string) {
 	// in len variable
 	len, err := file.WriteString(text)
 	if err != nil {
-		log.Fatalf("failed writing to file: %s", err)
+		return 0, err
 	}
 
-	fmt.Printf("\nFile Name: %s", file.Name())
-	fmt.Printf("\nLength: %d bytes", len)
+	return len, err
+
 }
 
 func ReadFile(filename string) (string, error) {
@@ -62,18 +55,19 @@ func ReadFile(filename string) (string, error) {
 
 }
 
-func WriteToFile(filename, text string) {
+func WriteToFile(filename, text string) error {
 
 	// we open the file
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Fatalf("failed opening file: %s", err)
+		return err
 	}
 	// we write the file
 	_, err = file.WriteString(text)
 	if err != nil {
-		log.Fatalf("failed writing to file: %s", err)
+		return err
 	}
 	// we close the file
 	file.Close()
+	return nil
 }

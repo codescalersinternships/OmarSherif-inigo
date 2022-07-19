@@ -17,10 +17,6 @@ func (d Dictionary) Search(key string) (string, error) {
 	return definition, nil
 }
 
-func (d Dictionary) Append(key, value string) {
-	d[key] = value
-}
-
-func (d Dictionary) AppendSection(key, value string) {
+func (d Dictionary) PutKey(key, value string) {
 	d[key] = value
 }

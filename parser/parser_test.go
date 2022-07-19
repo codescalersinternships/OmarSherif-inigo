@@ -50,10 +50,9 @@ func TestParser(t *testing.T) {
 			t.Errorf("Error: %v", err)
 		}
 
-		want := sectionDictionary{map[string]Section{"owner": {"owner", []string{}, []string{"name", "organization"},
+		want := sectionDictionary{map[string]Section{"owner": {"owner",
 			map[string]string{"name": "John Doe", "organization": "Acme Widgets Inc."}},
-			"database": {"database", []string{"; use IP address in case network name resolution is not working"},
-				[]string{"server", "port", "file"}, map[string]string{"server": "192.0.2.62", "port": "143", "file": "\"payroll.dat\""}}}}
+			"database": {"database", map[string]string{"server": "192.0.2.62", "port": "143", "file": "\"payroll.dat\""}}}}
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %q want %q", got, want)
@@ -66,7 +65,7 @@ func TestParser(t *testing.T) {
 			t.Errorf("Error: %v", err)
 		}
 
-		want := Section{"owner", []string{}, []string{"name", "organization"}, map[string]string{"name": "John Doe", "organization": "Acme Widgets Inc."}}
+		want := Section{"owner", map[string]string{"name": "John Doe", "organization": "Acme Widgets Inc."}}
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %q want %q", got, want)

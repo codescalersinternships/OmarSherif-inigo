@@ -6,6 +6,16 @@ import (
 	"strings"
 )
 
+const input = `[owner]
+	name = John Doe
+	organization = Acme Widgets Inc.
+
+	[database]
+	; use IP address in case network name resolution is not working
+	server = 192.0.2.62
+	port = 143
+	file = "payroll.dat"`
+
 const (
 	commentStart      = ';'
 	sectionStart      = '['
@@ -54,7 +64,7 @@ func (p *Parser) LoadFromString(input string) error {
 		}
 
 		// we append the section to the parser sections
-		p.allSections.Append(section.name, section)
+		p.allSections.PutKey(section.name, section)
 	}
 	return nil
 }
@@ -117,24 +127,12 @@ func (p *Parser) Get(sectionName string, key string) (string, error) {
 	return section.GetValue(key)
 }
 
-// returns the section's comment's list with the given section name
-func (p *Parser) GetComments(sectionName string) ([]string, error) {
-	section, err := p.GetSection(sectionName)
-	if err != nil {
-		return nil, err
-	}
-	return section.GetComments(), nil
-}
-
 // it returns it into its original Form
 func (p *Parser) ToString(input string) (output string) {
 	for sectionName, section := range p.allSections.sections {
 		output += fmt.Sprintf("[%s]\n", sectionName)
 		for key, value := range section.dictionary {
 			output += fmt.Sprintf("%s = %s\n", key, value)
-		}
-		for _, comment := range section.commentList {
-			output += fmt.Sprintf(";%s\n", comment)
 		}
 		output += "\n"
 
@@ -153,7 +151,7 @@ func (p *Parser) Set(section_name, key, value string) {
 	section, err := p.GetSection(section_name)
 	if err != nil { // if the section is not found
 		section, _ = NewSection("[" + section_name + "]")
-		p.allSections.Append(section_name, section)
+		p.allSections.PutKey(section_name, section)
 	}
 	section.SetKey(key, value)
 

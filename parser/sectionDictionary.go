@@ -15,6 +15,6 @@ func (d sectionDictionary) Search(key string) (Section, error) {
 	return definition, nil
 }
 
-func (d sectionDictionary) Append(key string, value Section) {
+func (d sectionDictionary) PutKey(key string, value Section) {
 	d.sections[key] = value
 }

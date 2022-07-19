@@ -5,25 +5,21 @@ import (
 )
 
 type Section struct {
-	name        string
-	commentList []string
-	keyList     []string
-	dictionary  Dictionary
+	name       string
+	dictionary Dictionary
 }
 
 func NewSection(input string) (Section, error) {
 
-	sectionName, commentList, keyList, sectionDictionary, err := createSection(input)
+	sectionName, sectionDictionary, err := createSection(input)
 
-	return Section{sectionName, commentList, keyList, sectionDictionary}, err
+	return Section{sectionName, sectionDictionary}, err
 }
 
 //
-func createSection(input string) (string, []string, []string, Dictionary, error) {
+func createSection(input string) (string, Dictionary, error) {
 	// Section Variables
 	var sectionName string
-	var commentList []string
-	var keyList []string
 	var sectionDictionary Dictionary
 	var sectionDictionaryMap = make(map[string]string)
 
@@ -41,16 +37,15 @@ func createSection(input string) (string, []string, []string, Dictionary, error)
 		statement = strings.TrimSpace(statement)
 		// we check if the statement is a comment
 		if strings.HasPrefix(statement, string(commentStart)) {
-			commentList = append(commentList, strings.TrimSpace(statement))
+			continue
 		} else {
 			// we split statement into a key value pair
 			keyValue := strings.Split(statement, "=")
-			keyList = append(keyList, strings.TrimSpace(keyValue[0]))
 			sectionDictionaryMap[strings.TrimSpace(keyValue[0])] = strings.TrimSpace(keyValue[1])
 		}
 	}
 	sectionDictionary = Dictionary(sectionDictionaryMap)
-	return sectionName, commentList, keyList, sectionDictionary, nil
+	return sectionName, sectionDictionary, nil
 }
 
 // Name returns name of Section.
@@ -60,7 +55,10 @@ func (s *Section) Name() string {
 
 // GetKeys returns all the keys in the section.
 func (s *Section) GetKeyList() (keys []string) {
-	return s.keyList
+	for key, _ := range s.dictionary {
+		keys = append(keys, key)
+	}
+	return keys
 }
 
 // GetValue returns the value of a key in the section.
@@ -70,7 +68,7 @@ func (s *Section) GetValue(key string) (string, error) {
 
 // Set a key in the section.
 func (s *Section) SetKey(key string, value string) {
-	s.dictionary.Append(key, value)
+	s.dictionary.PutKey(key, value)
 }
 
 // Update the value of a key in the section.
@@ -82,9 +80,4 @@ func (s *Section) UpdateKey(key string, value string) error {
 		s.SetKey(key, value)
 		return nil
 	}
-}
-
-// returns the Comment List of the section
-func (s *Section) GetComments() []string {
-	return s.commentList
 }
