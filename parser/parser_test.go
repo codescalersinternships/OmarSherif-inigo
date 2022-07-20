@@ -27,7 +27,8 @@ func TestParser(t *testing.T) {
 		}
 
 		want := []string{"owner", "database"}
-		if !reflect.DeepEqual(got, want) {
+		want2 := []string{"database", "owner"}
+		if !reflect.DeepEqual(got, want) && !reflect.DeepEqual(got, want2) {
 			t.Errorf("got %q want %q", got, want)
 		}
 	})
